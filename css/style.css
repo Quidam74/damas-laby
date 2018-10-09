@@ -1,3 +1,43 @@
+main{
+	display: flex;
+}
 
-* { margin: 0px; padding: 0px; }
+.block{
+	width: 10px;
+	height: 10px;
+}
 
+.wall{
+	background-color: black;
+}
+
+.empty{
+	background-color: white;
+}
+
+.coin{
+	background-color: yellow;
+	border-radius: 50%;
+	box-shadow: inset 0px -1px 10px 0px rgba(0,0,0,0.75);
+
+}
+
+.player{
+	background-color: blue;
+	border-radius: 50%;	
+}
+
+.player::after{
+	position: relative;
+
+}
+
+.me{
+	background-color: red;
+}
+
+.playerPanel{
+	position: absolute;
+	top :50px;
+	left: 50px;
+}
