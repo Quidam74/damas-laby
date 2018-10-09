@@ -5,44 +5,55 @@ var coinPosY =-1
 var mePosX = -1
 var mePosY = -1
 var jsutOne = true
+var totalPiece = 0
+var totalPiecePrecedent = 0
+var weNeedCoin = true
+var weNeedMap = true
 $(document).ready(function() {
 	var valueTimeOut = 100
 	var currentStep ="getMaze"
+
+
 	setInterval(function(){
-		switch (currentStep) {
-			case "getMaze":
-			getMaze()
-			currentStep = "initPlayerPanel"
-			break;
-			case "initPlayerPanel":
-			initPlayerPanel()
-			currentStep = "getPlayers"
-			break;
-			initPlayerPanel
-			case "getPlayers":
-			getPlayers()
-			currentStep = "getCoin"
-			break;
-
-
-			case "getCoin":
-			getCoin()
-			currentStep = "gotToCoin"
-			break;
-			case "gotToCoin":
+		if(weNeedMap){
 			gotToCoin()
-			currentStep = "getPlayers"
-			break;
-			
+			weNeedMap = false
+		}	else
+		if(weNeedCoin){
+			getCoin()
+			weNeedCoin = false
+		}else{
+			switch (currentStep) {
+				case "getMaze":
+				getMaze()
+				currentStep = "initPlayerPanel"
+				break;
+				case "initPlayerPanel":
+				initPlayerPanel()
+				currentStep = "getPlayers"
+				break;
+				initPlayerPanel
+
+				case "getPlayers":
+				getPlayers()
+				currentStep = "gotToCoin"
+				break;
+
+
+				case "getCoin":
+				getCoin()
+				currentStep = "gotToCoin"
+				break;
+				case "gotToCoin":
+				gotToCoin()
+				currentStep = "getPlayers"
+				break;
+
+			}
 		}
 
 	}, valueTimeOut);
 
-	
-	// setTimeout(function() {
-	// 	getPlayers()
-	// }, valueTimeOut);
-	
 
 });
 
@@ -91,6 +102,11 @@ function initPlayerPanel(){
 }
 
 function getPlayers(){
+
+	
+
+	totalPiece =0
+
 	$.post(link+"players",
 		{'pseudo' :'BELLANGER','password':'BELLANGER'},
 		function(data){
@@ -106,6 +122,8 @@ function getPlayers(){
 					document.querySelector("#"+player).innerHTML = player +"/"+data[player].requests +"/"+data[player].score
 					if(a != null)
 						becomePlayer(a)
+					totalPiece +=data[player].score
+
 					if(jsutOne)
 						if(player=="BELLANGER"){
 							mePosY = data[player].position.y
@@ -114,11 +132,18 @@ function getPlayers(){
 
 						}
 					}
+
+					if(totalPiecePrecedent!=totalPiece)
+						weNeedCoin = true
+
+						totalPiecePrecedent =totalPiece
+
 				}
 				else{
 					console.log("error")
 				}
 			},"json");
+	
 }
 
 function getCoin(){
@@ -159,6 +184,9 @@ function gotToCoin(){
 				mePosY-=1
 			}
 		}
+
+		if(goToX==0&&goToY==0)
+			weNeedMap = true
 
 
 		$.post(link+"move",
